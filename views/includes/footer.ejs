@@ -1,0 +1,110 @@
+<style>
+.footer {
+    background-color: grey;
+    color: #f8f9fa;
+    padding: 2rem 0;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3); /* Soft shadow for separation */
+    z-index: 1;
+}
+
+.f-info {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.f-info-socials {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.social-link {
+    color: #f8f9fa;
+    font-size: 1.5rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+    text-decoration: none;
+}
+
+.social-link:hover {
+    color: #ffd700; /* Gold hover effect */
+    transform: scale(1.2); /* Slight zoom */
+}
+
+.f-info-brand {
+    font-size: 1rem;
+    color: #f8f9fa;
+    margin: 1rem 0;
+    flex-basis: 100%;
+    opacity: 0.85; /* Softer text appearance */
+    transition: opacity 0.3s ease;
+}
+
+.f-info-brand:hover {
+    opacity: 1; /* Fully visible on hover */
+}
+
+.f-info-links {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.footer-link {
+    text-decoration: none;
+    color: #f8f9fa;
+    font-size: 0.9rem;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    border-bottom: 2px solid transparent;
+}
+
+.footer-link:hover {
+    color: #ffd700; /* Highlighted gold color */
+    border-bottom: 2px solid #ffd700; /* Underline effect */
+}
+
+@media (max-width: 768px) {
+    .f-info {
+        flex-direction: column;
+    }
+
+    .f-info-socials {
+        margin-bottom: 1rem;
+    }
+
+    .f-info-links {
+        margin-top: 1rem;
+    }
+}
+
+
+</style>
+
+<footer class="footer">
+    <div class="f-info">
+        <!-- Social Media Links -->
+        <div class="f-info-socials">
+            <a href="https://github.com/GAchronicles" class="social-link"><i class="fa-brands fa-github"></i></a>
+            <a href="https://www.instagram.com/gachronicles4/" class="social-link"><i class="fa-brands fa-square-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fa-brands fa-linkedin"></i></a>
+        </div>
+
+        <!-- Brand Name -->
+        <div class="f-info-brand">
+            &copy; 2024 Wanderlust Private Limited
+        </div>
+
+        <!-- Privacy and Terms -->
+        <div class="f-info-links">
+            <a href="/privacy" class="footer-link">Privacy</a>
+            <a href="/terms" class="footer-link">Terms</a>
+        </div>
+    </div>
+</footer>
