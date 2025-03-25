@@ -112,6 +112,9 @@ app.use("/listings",listingRouter);
 app.use("/listings/:id/reviews",reviewRouter);
 app.use("/",userRouter);
 app.use('/', legalRoutes);
+app.use("/", (req, res) => {// changed the root path
+  res.redirect("/listings");
+});
 
 
 
