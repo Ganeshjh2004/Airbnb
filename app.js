@@ -16,6 +16,7 @@ const session = require("express-session");
 const MongoStore = require('connect-mongo');
 const flash = require("connect-flash");
 const passport = require("passport");
+require('./Passport');
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
 
@@ -87,10 +88,10 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
+// passport.use(new LocalStrategy(User.authenticate()));
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
 app.use((req,res,next) => {
     res.locals.success = req.flash("success");
@@ -98,6 +99,22 @@ app.use((req,res,next) => {
     res.locals.currUser = req.user;
     next();
 });
+
+// Google auth routes
+app.get("/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+app.get("/auth/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+    failureFlash: true
+  }),
+  (req, res) => {
+    req.flash("success", "Welcome back!");
+    res.redirect("/listings");
+  }
+);
 
 // app.get("/demouser",async (req,res) => {
 //      let fakeUser = new User({
@@ -154,6 +171,10 @@ app.get("/categories/:category", async (req, res) => {
         res.redirect("/");
     }
 });
+
+
+
+
 
 
 //privacy and terms routes  
