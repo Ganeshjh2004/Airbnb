@@ -165,8 +165,8 @@
 </div>
 
 <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
-  <% if(list != '') { %>
-    <% for (let listing of list) { %>
+  <% if(list.length>0) { %>
+    <% list.forEach(listing => { %>
       <a href="/listings/<%= listing._id %>" class="listing-link">
         <div class="card col listing-card">
           <img src="<%= listing.image.url %>" class="card-img-top" alt="Listing Image" style="height: 20rem;">
@@ -183,7 +183,7 @@
           </div>
         </div>
       </a>
-    <% } %>  
+    <% }) %>  
   <% } else { %> 
     <p>No Listings found in this category.</p>
   <% } %>    
