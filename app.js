@@ -121,7 +121,7 @@ app.use("/", (req, res) => {// changed the root path
 app.use("/search",async (req,res)=> {
     
     try {
-        let {searchList}= req.body;
+        let {searchList}= req.query;
         let list = await Listing.find({ 
             country: { $regex: searchList, $options: "i" } 
         });        
