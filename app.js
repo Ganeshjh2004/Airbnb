@@ -118,20 +118,28 @@ app.use("/", (req, res) => {// changed the root path
 
 
 
-app.get("/search",async (req,res)=> {
-    
-    try {
-        let {searchList}= req.query;
-        let list = await Listing.find({ 
-            country: { $regex: searchList, $options: "i" } 
-        });        
-        res.render("listings/search",{list});
-    }
-    catch (err) {
-        res.status(500).send({ message: err.message || "Error Occured" })
-    }
-    
+app.get("/search", async (req, res) => {
+  const { searchList } = req.query;
+  console.log("Search Query:", searchList);
+
+  try {
+    const list = await Listing.find({
+      $or: [
+        { title: { $regex: searchList, $options: "i" } },
+        { country: { $regex: searchList, $options: "i" } },
+        { location: { $regex: searchList, $options: "i" } },
+        { description: { $regex: searchList, $options: "i" } }
+      ]
+    });
+
+    console.log("Listings Found:", list.length);
+    res.render("listings/search", { list });
+  } catch (err) {
+    console.error("Search Error:", err);
+    res.status(500).send("Internal Server Error");
+  }
 });
+
 
 app.get("/categories/:category", async (req, res) => {
     const { category } = req.params;
