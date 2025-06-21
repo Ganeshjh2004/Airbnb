@@ -118,14 +118,14 @@ app.use("/", (req, res) => {// changed the root path
 
 
 
-app.use("/search",async (req,res)=> {
+app.get("/search",async (req,res)=> {
     
     try {
         let {searchList}= req.query;
         let list = await Listing.find({ 
             country: { $regex: searchList, $options: "i" } 
         });        
-        res.render("listings/search.ejs",{list});
+        res.render("listings/search",{list});
     }
     catch (err) {
         res.status(500).send({ message: err.message || "Error Occured" })
