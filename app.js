@@ -177,13 +177,7 @@ app.get("/categories/:category", async (req, res) => {
 
 
 
-//privacy and terms routes  
-// app.use("/privacy",async (req,res)=>{
-//     res.render("listings/privacy.ejs");
-// });
-// app.use("/terms",async (req,res)=>{
-//     res.render("listings/terms.ejs");
-// });
+
 
 
 app.all("*",(req,res,next) => {
