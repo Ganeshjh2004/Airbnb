@@ -1,0 +1,58 @@
+<!-- <% layout("/layouts/boilerplate.ejs") %> -->
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-8 offset-2 text-center">
+            <h2>Complete Your Payment</h2>
+            <p>Total Amount: ₹ <%= booking.totalAmount %></p>
+            <button id="rzp-button" class="btn btn-dark">Pay Now</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    const options = {
+        key: "<%= key_id %>", // Razorpay key ID from env
+        amount: "<%= order.amount %>",
+        currency: "INR",
+       name: "<%= currUser.username %>", 
+        description: "Room Booking",
+        order_id: "<%= order.id %>",
+        handler: function (response) {
+            // Send to server for verification
+            fetch('/verify-payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    bookingId: "<%= booking._id %>"
+                })
+            }).then(res => res.json())
+              .then(data => {
+                  if (data.success) {
+                      window.location.href = data.redirect;
+                  } else {
+                      alert('Payment verification failed');
+                  }
+              });
+        },
+        prefill: {
+            name: "<%= booking.user.username %>",
+            email: "", // Optional if you have user email
+        },
+        theme: {
+            color: "#343a40"
+        }
+    };
+
+    const rzp = new Razorpay(options);
+    document.getElementById('rzp-button').onclick = function (e) {
+        rzp.open();
+        e.preventDefault();
+    };
+</script>

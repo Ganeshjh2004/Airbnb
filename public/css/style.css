@@ -89,4 +89,24 @@ body {
     padding-left: 0;
     padding-right: 0;
 }
+#customChatLauncher {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #E23339; /* same as your search button */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  z-index: 9999;
+}
+#customChatLauncher:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
 

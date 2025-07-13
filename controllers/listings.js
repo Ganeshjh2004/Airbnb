@@ -10,10 +10,6 @@ module.exports.index = async (req,res)=>{
 
 
 
-
-    
-
-
 module.exports.renderNewForm = (req,res)=>{
     
     res.render("listings/new.ejs");
@@ -50,7 +46,7 @@ module.exports.editListing = async (req,res)=>{
     const Listing = await listing.findById(id);
     if(!Listing){
         req.flash("success","Listing you requested for does not exist!");
-        res.redirect("/listings");
+       return  res.redirect("/listings");
     }
 
     let originalImageUrl =Listing.image.url;

@@ -1,226 +1,234 @@
 <% layout("/layouts/boilerplate.ejs") %>
 
 <style>
+  /* ---------- Listing Card ---------- */
+  .listing-card {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    transition: transform 0.3s ease;
+  }
 
-/* Style for the card container */
-.listing-card {
-    border-radius: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+  .listing-card:hover {
+    transform: translateY(-5px);
+  }
 
-/* Hover effect for the card */
-.listing-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Style for the image */
-.show-img {
-    border-radius: 15px;
+  .listing-card img {
+    height: 300px;
     object-fit: cover;
-    height: 250px;
-}
+    width: 100%;
+  }
 
-/* Style for the card body */
-.card-body {
+  .listing-details {
     padding: 20px;
-}
+    background: #fafafa;
+  }
 
-/* Style for the title */
-h3 {
-    font-size: 24px;
+  .listing-details h3 {
+    font-size: 28px;
     font-weight: 700;
-    margin-bottom: 10px;
-    font-style: italic;
-}
+    margin-bottom: 15px;
+  }
 
-/* Style for the text inside the card */
-.card-text {
+  .listing-details p {
+    margin-bottom: 8px;
     font-size: 16px;
-    font-weight: bold;
-    font-style: italic;
-    margin-bottom: 10px;
-}
+  }
 
-/* Style for price */
-.card-text:nth-child(4) {
+  .price-pill {
+    background: #343a40;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: inline-block;
     font-size: 18px;
-    font-weight: bold;
-    font-style: italic;
-}
+    margin-top: 10px;
+  }
 
-/* Review section styles */
-.starability-slot input {
-    display: none;
-}
+  /* ---------- Booking Form ---------- */
+  .booking-card {
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 20px;
+    background: #fdfdfd;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    margin-top: 30px;
+  }
 
-/* Review form styles */
-textarea {
+  .booking-card input:focus {
+    border-color: #343a40;
+    box-shadow: 0 0 5px rgba(52,58,64,0.4);
+  }
+
+  /* ---------- Login Alert ---------- */
+  .login-alert {
+    border: 1px solid #ddd;
+    background: #fff8e1;
+    padding: 15px;
+    border-radius: 10px;
+    color: #8a6d3b;
+    margin-top: 30px;
+  }
+
+  /* ---------- Reviews ---------- */
+  .review-card {
+    border-left: 4px solid #343a40;
+    padding: 15px;
+    border-radius: 10px;
+    background: #fdfdfd;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+  }
+
+  .review-card .starability-result {
+    font-size: 20px;
+    color: #f1c40f;
+  }
+
+  /* ---------- Review Form ---------- */
+  textarea {
     resize: none;
     font-size: 16px;
     padding: 10px;
     width: 100%;
     border-radius: 5px;
     border: 1px solid #ccc;
-    font-style: italic;
-}
+  }
 
-textarea:focus {
+  textarea:focus {
     outline: none;
     border-color: #6c757d;
-}
+  }
 
-.invalid-feedback {
+  .invalid-feedback {
     color: #e74c3c;
     font-size: 14px;
-}
+  }
 
-/* Button styles */
-.btn-outline-dark {
-    background-color: #f8f9fa;
-    border: 1px solid #6c757d;
-    color: #343a40;
-    padding: 10px 15px;
-    border-radius: 5px;
-}
+  /* ---------- Buttons ---------- */
+  .btn-outline-dark, .btn-dark {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
 
-.btn-outline-dark:hover {
+  .btn-outline-dark:hover, .btn-dark:hover {
     background-color: #343a40;
     color: #fff;
+  }
+  .btn-pill {
+  border-radius: 50px;
+  padding: 10px 25px;
+  font-size: 16px;
+  transition: all 0.3s ease;
 }
 
-.edit-btn, .btn-dark {
-    font-size: 14px;
-    padding: 8px 15px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+.btn-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
-
-.edit-btn:hover, .btn-dark:hover {
-    background-color: #6c757d;
-    color: #fff;
-}
-
-/* Styling for the review cards */
-.card.review-card {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-
-.card-title {
-    font-size: 18px;
-    font-weight: 500;
-}
-
-.starability-result {
-    font-size: 16px;
-    color: #FFD700;
-}
-
-.card-body {
-    padding: 15px;
-}
-
-/* Footer Styling - Ensures footer does not occupy full space */
-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #f1f1f1;
-    border-top: 1px solid #ddd;
-    position: relative;
-    width: 100%;
-    bottom: 0;
-}
-
-footer .footer-content {
-    width: 100%;
-    text-align: center;
-    font-size: 14px;
-    color: #333;
-}
-
 
 </style>
 
-
-     <div class="container">
-        <div class="row mt-3">
-            <div class="col-8 offset-2 text-center">
-                <h3><%= listing1.title %></h3>
-            </div>
+<div class="container">
+  <!-- Listing Card -->
+  <div class="row mt-4">
+    <div class="col-10 offset-1">
+      <div class="listing-card">
+        <img src="<%= listing1.image.url %>" alt="Listing Image" />
+        <div class="listing-details">
+          <h3><%= listing1.title %></h3>
+          <p>👤 Owned by <%= listing1.owner.username %></p>
+          <p>📍 <%= listing1.location %>, <%= listing1.country %></p>
+          <p>🏷️ <%= listing1.category %></p>
+          <div class="price-pill">&#8377; <%= listing1.price.toLocaleString("en-IN") %> / night</div>
         </div>
-    
-        <div class="row mt-3">
-            <div class="card col-6 offset-3 listing-card">
-                <img src="<%= listing1.image.url %>" class="card-img-top show-img" alt="Listing Image">
-                <div class="card-body">
-                    <p class="card-text"><i>Owned by <%= listing1.owner.username %></i></p>
-                    <p class="card-text"><%= listing1.description %></p>
-                    <p class="card-text">&#8377; <%= listing1.price.toLocaleString("en-IN") %></p>
-                    <p class="card-text"><%= listing1.location %></p>
-                    <p class="card-text"><%= listing1.country %></p>
-                    <p class="card-text"><%= listing1.category %></p>
-                </div>
-            </div>
-        </div>
-    
-        <% if (currUser && listing1.owner._id.equals(currUser._id)) { %>
-            <div class="row mt-3">
-                <div class="col-6 offset-3 d-flex justify-content-between">
-                    <a href="/listings/<%= listing1._id %>/edit" class="btn btn-dark edit-btn">Edit</a>
-                    <form method="post" action="/listings/<%= listing1._id%>?_method=DELETE">
-                        <button class="btn btn-dark">Delete</button>
-                    </form>
-                </div>
-            </div>
-        <% } %>
-    
-        <div class="row mt-4">
-            <div class="col-8 offset-2">
-                <hr>
-                <% if (currUser) { %>
-                    <h4>Leave a Review</h4>
-                    <form action="/listings/<%= listing1.id %>/reviews" method="post" novalidate class="needs-validation">
-                        <div class="mb-3">
-                            <label for="rating" class="form-label">Rating</label>
-                            <fieldset class="starability-slot">
-                                <% for (let i = 1; i <= 5; i++) { %>
-                                    <input type="radio" id="rate<%= i %>" name="review[rating]" value="<%= i %>" />
-                                    <label for="rate<%= i %>" title="<%= ['Terrible', 'Not good', 'Average', 'Very good', 'Amazing'][i-1] %>">
-                                        <%= i %> star<%= i > 1 ? 's' : '' %>
-                                    </label>
-                                <% } %>
-                            </fieldset>
-                        </div>
-                        <div class="mb-3">
-                            <label for="comment" class="form-label">Comment</label>
-                            <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required></textarea>
-                            <div class="invalid-feedback">Please add some comments for review</div>
-                        </div>
-                        <button class="btn btn-outline-dark">Submit</button>
-                    </form>
-                <% } %>
-    
-                <p><b>All Reviews</b></p>
-                <div class="row">
-                    <% for (review of listing1.reviews) { %>
-                        <div class="card col-5 ms-3 mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">@<%= review.author.username %></h5>
-                                <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
-                                <p class="card-text"><%= review.comment %></p>
-                            </div>
-                            <form action="/listings/<%= listing1._id %>/reviews/<%= review._id%>?_method=DELETE" method="post">
-                                <button class="btn btn-sm btn-dark">Delete</button>
-                            </form>
-                        </div>
-                    <% } %>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-    
+  </div>
+
+  <!-- Buttons for Owner -->
+  <% if (currUser && listing1.owner._id.equals(currUser._id)) { %>
+    <div class="row mt-4">
+  <div class="col-6 offset-3 d-flex justify-content-center gap-3">
+    <a href="/listings/<%= listing1._id %>/edit" class="btn btn-outline-dark btn-pill shadow-sm">
+      ✏️ Edit
+    </a>
+    <form method="post" action="/listings/<%= listing1._id %>?_method=DELETE">
+      <button class="btn btn-dark btn-pill shadow-sm">🗑 Delete</button>
+    </form>
+  </div>
+</div>
+
+  <% } %>
+
+  <!-- Please Login Message -->
+  <% if (!currUser) { %>
+    <div class="col-8 offset-2 login-alert">
+      🔒 Please <a href="/login">log in</a> to book this listing.
+    </div>
+  <% } %>
+
+  <!-- Booking Form -->
+  <% if (currUser && !listing1.owner._id.equals(currUser._id)) { %>
+    <div class="col-8 offset-2 booking-card">
+      <h4 class="mb-3">Book This Room</h4>
+      <form method="post" action="/listings/<%= listing1._id %>/book">
+        <div class="mb-3">
+          <label for="checkIn" class="form-label">Check-In</label>
+          <input type="date" name="checkIn" id="checkIn" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label for="checkOut" class="form-label">Check-Out</label>
+          <input type="date" name="checkOut" id="checkOut" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-outline-dark w-100">Book Now</button>
+      </form>
+    </div>
+  <% } %>
+
+  <!-- Review Form -->
+  <div class="row mt-5">
+    <div class="col-8 offset-2">
+      <hr />
+      <% if (currUser) { %>
+        <h4>Leave a Review</h4>
+        <form action="/listings/<%= listing1.id %>/reviews" method="post" novalidate class="needs-validation">
+          <div class="mb-3">
+            <label for="rating" class="form-label">Rating</label>
+            <fieldset class="starability-slot">
+              <% for (let i = 1; i <= 5; i++) { %>
+                <input type="radio" id="rate<%= i %>" name="review[rating]" value="<%= i %>"/>
+                <label for="rate<%= i %>" title="<%= ['Terrible', 'Not good', 'Average', 'Very good', 'Amazing'][i-1] %>">
+                  <%= i %> star<%= i > 1 ? 's' : '' %>
+                </label>
+              <% } %>
+            </fieldset>
+          </div>
+          <div class="mb-3">
+            <label for="comment" class="form-label">Comment</label>
+            <textarea name="review[comment]" id="comment" rows="5" required></textarea>
+            <div class="invalid-feedback">Please add some comments for review</div>
+          </div>
+          <button class="btn btn-outline-dark">Submit</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div class="row mt-4">
+    <div class="col-8 offset-2">
+      <h4>All Reviews</h4>
+      <% for (review of listing1.reviews) { %>
+        <div class="review-card">
+          <h5>@<%= review.author.username %></h5>
+          <p class="starability-result" data-rating="<%= review.rating %>"></p>
+          <p><%= review.comment %></p>
+          <form action="/listings/<%= listing1._id %>/reviews/<%= review._id%>?_method=DELETE" method="post">
+            <button class="btn btn-sm btn-dark mt-2">Delete</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>

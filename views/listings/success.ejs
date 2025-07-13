@@ -1,0 +1,43 @@
+<!-- <% layout("/layouts/boilerplate.ejs") %> -->
+
+<h1 style="font-size: 2rem; color: #2c3e50; margin-bottom: 1rem;">Booking Successful!</h1>
+<p style="font-size: 1.2rem;">Your booking for <strong><%= booking.listing.title %></strong> is confirmed.</p>
+
+<ul style="list-style: none; padding: 0; font-size: 1.1rem;">
+    <li><strong>Check-in:</strong> <%= booking.checkIn.toDateString() %></li>
+    <li><strong>Check-out:</strong> <%= booking.checkOut.toDateString() %></li>
+    <li><strong>Total Amount:</strong> ₹<%= booking.totalAmount %></li>
+</ul>
+
+<!-- Pretty Download Invoice Button -->
+<a href="/bookings/<%= booking._id %>/invoice.pdf"
+   style="
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+   "
+   onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 18px rgba(0,0,0,0.25)'"
+   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'"
+>
+    📄 Download Invoice PDF
+</a>
+
+<br><br>
+
+<a href="/listings"
+   style="
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #3498db;
+    text-decoration: underline;
+   ">
+   ← Back to Listings
+</a>

@@ -19,7 +19,7 @@ module.exports.saveRedirectUrl = (req,res,next) => {
         console.log(req.localsredirectUrl);
     }
     next();
-}
+};
 
 
 module.exports.isOwner = async (req,res,next) => {
@@ -31,13 +31,13 @@ module.exports.isOwner = async (req,res,next) => {
 }
 
   next();
-}
+};
 
 module.exports.validateListing = (req, res, next) => {
     const { error } = listingSchema.validate(req.body);
     if (error) {
         const errMsg = error.details.map((el) => el.message).join(", ");
-        next(new ExpressError(errMsg, 400)); // Use your error handler
+        next(new ExpressError( 400,errMsg)); // Use your error handler
     } else {
         next();
     }
@@ -55,7 +55,7 @@ module.exports.validateReview = (req,res,next) => {
         }else{
             next();
         }
-}
+};
 
 
 
@@ -68,4 +68,4 @@ module.exports.isReviewAuthor = async (req,res,next) => {
 }
 
   next();
-}
+};

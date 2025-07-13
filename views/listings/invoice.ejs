@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Booking Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; color: #333; }
+        h1 { color: #ff5a5f; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f7f7f7; }
+        .footer { margin-top: 40px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Booking Confirmation</h1>
+    <p>Hi <strong><%= booking.user.username %></strong>,</p>
+    <p>Your booking for <strong><%= booking.listing.title %></strong> is confirmed!</p>
+
+    <table>
+        <tr>
+            <th>Check-in</th>
+            <th>Check-out</th>
+            <th>Total Amount</th>
+        </tr>
+        <tr>
+            <td><%= booking.checkIn.toDateString() %></td>
+            <td><%= booking.checkOut.toDateString() %></td>
+            <td>₹<%= booking.totalAmount %></td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <p>Thank you for booking with Wanderlust!</p>
+    </div>
+</body>
+</html>
