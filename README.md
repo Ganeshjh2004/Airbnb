@@ -2,8 +2,8 @@
 ````markdown
 # 🏠 Airbnb Clone
 
-A full-stack **Airbnb-like booking platform** built with **Node.js, Express, MongoDB, EJS**, and integrated with **Cloudinary, Razorpay, and Passport.js**.  
-Features include property listings, booking management, payments, reviews, AI chatbot assistance, and more.  
+A full-stack **Airbnb-style booking platform** built with **Node.js, Express, MongoDB, EJS, Passport.js, Razorpay, and Cloudinary**.  
+This project implements **authentication, property listing management, payments, reviews, and an AI-powered chatbot** for user assistance..  
 
 🌐 **Live Demo:** [sigma-project-vgid.onrender.com](https://sigma-project-vgid.onrender.com)
 
