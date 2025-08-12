@@ -95,13 +95,13 @@ Features include property listings, booking management, payments, reviews, AI ch
 ## 🖼 Screenshots
 
 ### **Home Page**
-![Home Page](screenshots/ef8d6d81-9648-4794-ac0e-42f390432727.png)
+![Home Page](ScreenShots/home.png)
 
 ### **Listing Details**
-![Listing Details](screenshots/72fbfb7d-194f-470d-8cdf-6f3542af3da5.png)
+![Listing Details](ScreenShots/listing.png)
 
 ### **Review System**
-![Review System](screenshots/c04235b0-fab5-4526-891a-67546233668b.png)
+![Review System](ScreenShots/review.png)
 ---
 
 💡 Possible Improvements
