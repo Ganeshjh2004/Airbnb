@@ -1,5 +1,3 @@
-
-````markdown
 # 🏠 Airbnb Clone
 
 A full-stack **Airbnb-style booking platform** built with **Node.js, Express, MongoDB, EJS, Passport.js, Razorpay, and Cloudinary**.  
@@ -118,7 +116,4 @@ This project implements **authentication, property listing management, payments,
 ---
 
 ## 📝 License
-
 This project is licensed under the MIT License.
-
-
