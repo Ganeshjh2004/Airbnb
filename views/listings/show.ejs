@@ -219,14 +219,22 @@
   <div class="row mt-4">
     <div class="col-8 offset-2">
       <h4>All Reviews</h4>
-      <% for (review of listing1.reviews) { %>
+        <%# Iterate over all reviews for this listing %>
+        <% for (let review of listing1.reviews) { %>
         <div class="review-card">
           <h5>@<%= review.author.username %></h5>
           <p class="starability-result" data-rating="<%= review.rating %>"></p>
           <p><%= review.comment %></p>
-          <form action="/listings/<%= listing1._id %>/reviews/<%= review._id%>?_method=DELETE" method="post">
-            <button class="btn btn-sm btn-dark mt-2">Delete</button>
-          </form>
+          <%#
+            Authorization: Only show the delete button to the review's author.
+            The server enforces this via isReviewAuthor middleware, but hiding
+            the button for other users provides better UX and avoids confusion.
+          %>
+          <% if (currUser && review.author._id.equals(currUser._id)) { %>
+            <form action="/listings/<%= listing1._id %>/reviews/<%= review._id %>?_method=DELETE" method="post">
+              <button class="btn btn-sm btn-dark mt-2">Delete</button>
+            </form>
+          <% } %>
         </div>
       <% } %>
     </div>

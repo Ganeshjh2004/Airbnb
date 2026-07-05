@@ -1,4 +1,5 @@
-<!-- <% layout("/layouts/boilerplate.ejs") %> -->
+<%# Renders inside the shared boilerplate layout (navbar, flash messages, footer, scripts) %>
+<% layout("/layouts/boilerplate.ejs") %>
 
 <div class="container mt-5">
     <div class="row">
@@ -43,7 +44,7 @@
         },
         prefill: {
             name: "<%= booking.user.username %>",
-            email: "", // Optional if you have user email
+            email: "<%= booking.user.email || '' %>",
         },
         theme: {
             color: "#343a40"

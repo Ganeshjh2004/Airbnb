@@ -2,19 +2,46 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Review = require("./review.js");
 
+/**
+ * Mongoose schema for a property Listing.
+ *
+ * A Listing is the core entity of the platform. It is created by an owner (User),
+ * belongs to a category, has an image stored on Cloudinary, can be reviewed,
+ * and can be booked. When a Listing is deleted, all associated Reviews are also
+ * deleted via the post-hook below.
+ *
+ * @typedef {Object} Listing
+ * @property {string}                  title       - Display title of the listing.
+ * @property {string}                  description - Detailed description of the property.
+ * @property {{ url: string, filename: string }} image - Cloudinary image metadata.
+ * @property {number}                  price       - Per-night price in the local currency.
+ * @property {string}                  location    - City / locality of the property.
+ * @property {string}                  country     - Country where the property is located.
+ * @property {string}                  category    - Category tag (must be one of the enum values).
+ * @property {mongoose.Types.ObjectId[]} reviews   - Array of Review references.
+ * @property {mongoose.Types.ObjectId} owner       - Reference to the User who owns the listing.
+ */
 const listingSchema = new Schema({
     title: {
         type: String,
         required: true,
     },
-    description: String,
+    description: {
+        type: String,
+    },
     image: {
         url: String,
         filename: String,
     },
-    price: Number,
-    location: String,
-    country: String,
+    price: {
+        type: Number,
+    },
+    location: {
+        type: String,
+    },
+    country: {
+        type: String,
+    },
     category: {
         type: String,
         enum: [
@@ -44,6 +71,13 @@ const listingSchema = new Schema({
     },
 });
 
+/**
+ * Post-delete hook: When a Listing is deleted via findOneAndDelete,
+ * all Review documents referenced by that listing are also removed.
+ * This prevents orphaned Review documents from accumulating in the database.
+ *
+ * @param {Object} listing - The deleted listing document.
+ */
 listingSchema.post("findOneAndDelete", async (listing) => {
     if (listing) {
         await Review.deleteMany({ _id: { $in: listing.reviews } });
