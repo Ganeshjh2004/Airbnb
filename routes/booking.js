@@ -43,6 +43,17 @@ router.get(
     bookingController.bookingSuccess
 );
 
+/**
+ * POST /bookings/:id/cancel
+ * Cancels a paid booking (owner-only, more than 24 h before check-in) and
+ * triggers a Razorpay refund.
+ */
+router.post(
+    "/bookings/:id/cancel",
+    isLoggedIn,
+    bookingController.cancelBooking
+);
+
 // ─── Invoice Download Route ───────────────────────────────────────────────────
 
 /**

@@ -55,6 +55,27 @@ exports.bookListing = async (req, res) => {
             return res.redirect(`/listings/${id}`);
         }
 
+        // ── Overlap check ────────────────────────────────────────────────────
+        // Reject if there is already a paid booking for this listing whose
+        // date range overlaps the requested range.
+        //
+        // Two ranges [A,B) and [C,D) overlap when A < D AND C < B.
+        // We also exclude cancelled bookings — they are treated as free slots.
+        const overlapping = await Booking.findOne({
+            listing: id,
+            paymentStatus: "paid",
+            checkIn: { $lt: new Date(checkOut) },
+            checkOut: { $gt: new Date(checkIn) },
+        });
+
+        if (overlapping) {
+            req.flash(
+                "error",
+                "These dates are already booked. Please choose different dates."
+            );
+            return res.redirect(`/listings/${id}`);
+        }
+
         // Razorpay requires the amount in the smallest currency unit (paise for INR)
         const totalAmountPaise = listing.price * days * 100;
 
@@ -248,5 +269,75 @@ exports.bookingSuccess = async (req, res) => {
     } catch (err) {
         console.error("Booking success page error:", err.stack || err);
         res.status(500).send("Server error.");
+    }
+};
+
+// ─── Cancel Booking ───────────────────────────────────────────────────────────
+
+/**
+ * Controller: Cancels a paid booking and issues a Razorpay refund.
+ *
+ * Rules enforced:
+ *  - The requesting user must be the booking owner.
+ *  - Cancellation is only allowed more than 24 hours before check-in.
+ *  - Only bookings with paymentStatus "paid" can be cancelled.
+ *
+ * On success the booking's paymentStatus is set to "cancelled" and a full
+ * refund is triggered via razorpay.payments.refund (amount in paise).
+ *
+ * @async
+ * @param {import("express").Request}  req - Params: { id } (booking ID)
+ * @param {import("express").Response} res
+ */
+exports.cancelBooking = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const booking = await Booking.findById(id);
+
+        if (!booking) {
+            req.flash("error", "Booking not found.");
+            return res.redirect("/listings");
+        }
+
+        // Owner-only: the logged-in user must be the booking's owner
+        if (!booking.user.equals(req.user._id)) {
+            req.flash("error", "You are not authorised to cancel this booking.");
+            return res.redirect("/listings");
+        }
+
+        // Only paid bookings can be cancelled
+        if (booking.paymentStatus !== "paid") {
+            req.flash("error", "Only confirmed (paid) bookings can be cancelled.");
+            return res.redirect("/listings");
+        }
+
+        // Enforce 24-hour cutoff before check-in
+        const hoursUntilCheckIn =
+            (new Date(booking.checkIn) - Date.now()) / (1000 * 60 * 60);
+
+        if (hoursUntilCheckIn <= 24) {
+            req.flash(
+                "error",
+                "Cancellations are only allowed more than 24 hours before check-in."
+            );
+            return res.redirect("/listings");
+        }
+
+        // Issue the Razorpay refund (amount in paise = totalAmount * 100)
+        await razorpay.payments.refund(booking.razorpayPaymentId, {
+            amount: booking.totalAmount * 100,
+        });
+
+        // Mark the booking as cancelled
+        booking.paymentStatus = "cancelled";
+        await booking.save();
+
+        req.flash("success", "Your booking has been cancelled and a refund has been initiated.");
+        return res.redirect("/listings");
+    } catch (err) {
+        console.error("Booking cancellation error:", err.stack || err);
+        req.flash("error", "Something went wrong while cancelling your booking.");
+        return res.redirect("/listings");
     }
 };

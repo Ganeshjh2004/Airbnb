@@ -30,6 +30,42 @@
     📄 Download Invoice PDF
 </a>
 
+<%
+    /* Show the Cancel button only if:
+     *  1. The booking is still in paid status (not already cancelled).
+     *  2. Check-in is more than 24 hours away.
+     */
+    const msUntilCheckIn = new Date(booking.checkIn) - Date.now();
+    const hoursUntilCheckIn = msUntilCheckIn / (1000 * 60 * 60);
+    const canCancel = booking.paymentStatus === "paid" && hoursUntilCheckIn > 24;
+%>
+
+<% if (canCancel) { %>
+<br><br>
+<form action="/bookings/<%= booking._id %>/cancel" method="POST"
+      onsubmit="return confirm('Are you sure you want to cancel this booking? A refund will be issued.');">
+    <button type="submit"
+            style="
+             display: inline-block;
+             padding: 12px 28px;
+             background: linear-gradient(135deg, #e74c3c, #c0392b);
+             color: white;
+             font-weight: 600;
+             font-size: 1rem;
+             border: none;
+             border-radius: 8px;
+             cursor: pointer;
+             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+             transition: all 0.3s ease;
+            "
+            onmouseover="this.style.transform='translateY(-3px)'"
+            onmouseout="this.style.transform='translateY(0)'"
+    >
+        ✕ Cancel Booking
+    </button>
+</form>
+<% } %>
+
 <br><br>
 
 <a href="/listings"

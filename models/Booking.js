@@ -15,7 +15,7 @@ const mongoose = require("mongoose");
  * @property {Date}                    checkIn           - Check-in date.
  * @property {Date}                    checkOut          - Check-out date.
  * @property {number}                  totalAmount       - Total cost in the base currency unit (e.g. INR).
- * @property {"pending"|"paid"}        paymentStatus     - Payment state; defaults to "pending".
+ * @property {"pending"|"paid"|"cancelled"} paymentStatus  - Payment state; defaults to "pending".
  * @property {string}                  razorpayOrderId   - Razorpay order ID returned at order creation.
  * @property {string}                  razorpayPaymentId - Razorpay payment ID captured after successful payment.
  */
@@ -42,7 +42,7 @@ const bookingSchema = new mongoose.Schema(
         },
         paymentStatus: {
             type: String,
-            enum: ["pending", "paid"],
+            enum: ["pending", "paid", "cancelled"],
             default: "pending",
         },
         /** Razorpay order ID; set when the order is first created. */
