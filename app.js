@@ -45,6 +45,7 @@ const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 const legalRoutes = require("./routes/legal.js");
 const bookingRoutes = require("./routes/booking");
+const dashboardRoutes = require("./routes/dashboard");
 const Listing = require("./models/listing.js");
 
 // ─── View Engine ──────────────────────────────────────────────────────────────
@@ -167,6 +168,7 @@ app.get(
 // ─── Application Routes ───────────────────────────────────────────────────────
 
 app.use("/", bookingRoutes);
+app.use("/", dashboardRoutes);
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);

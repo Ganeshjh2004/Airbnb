@@ -1,0 +1,194 @@
+﻿<%# Host Dashboard — rendered inside boilerplate layout %>
+<% layout("/layouts/boilerplate.ejs") %>
+
+<style>
+  .dashboard-header {
+    background: linear-gradient(135deg, #FF385C 0%, #BD1E59 100%);
+    color: white;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 32px rgba(255,56,92,0.25);
+  }
+  .dashboard-header h1 { font-size: 2rem; font-weight: 700; margin: 0; }
+  .dashboard-header p  { margin: 0.4rem 0 0; opacity: 0.9; font-size: 1rem; }
+
+  .section-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #2c3e50;
+    border-left: 4px solid #FF385C;
+    padding-left: 0.75rem;
+    margin: 2rem 0 1rem;
+  }
+
+  /* ── Listing cards ── */
+  .listing-card {
+    border: none;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+  }
+  .listing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(0,0,0,0.14);
+  }
+  .listing-card img {
+    width: 100%; height: 180px; object-fit: cover;
+  }
+  .listing-card .card-body { padding: 1rem 1.1rem; }
+  .listing-card .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .listing-card .card-subtitle { font-size: 0.82rem; color: #777; margin-bottom: 0.7rem; }
+  .listing-card .price-badge {
+    display: inline-block;
+    background: #fff3f5;
+    color: #FF385C;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 2px 10px;
+    border-radius: 20px;
+    border: 1px solid #ffd0d9;
+  }
+  .listing-actions { display: flex; gap: 0.5rem; margin-top: 0.9rem; }
+  .btn-edit {
+    font-size: 0.8rem; padding: 5px 14px; border-radius: 20px;
+    background: #f0f4ff; color: #2575fc; border: 1px solid #c8d8ff;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .btn-edit:hover { background: #dce8ff; color: #1a5de0; }
+  .btn-delete {
+    font-size: 0.8rem; padding: 5px 14px; border-radius: 20px;
+    background: #fff0f0; color: #e74c3c; border: 1px solid #ffd0d0;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .btn-delete:hover { background: #ffe0e0; }
+
+  /* ── Bookings table ── */
+  .bookings-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 6px;
+  }
+  .bookings-table thead th {
+    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em;
+    color: #999; font-weight: 600; padding: 0 1rem 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+  }
+  .bookings-table tbody tr {
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-radius: 10px;
+    transition: box-shadow 0.2s;
+  }
+  .bookings-table tbody tr:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.1); }
+  .bookings-table tbody td {
+    padding: 0.85rem 1rem; font-size: 0.9rem; vertical-align: middle;
+  }
+  .bookings-table tbody td:first-child { border-radius: 10px 0 0 10px; }
+  .bookings-table tbody td:last-child  { border-radius: 0 10px 10px 0; }
+
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, #FF385C, #BD1E59);
+    color: white; font-weight: 700; font-size: 0.85rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-right: 0.5rem;
+  }
+  .status-paid {
+    display: inline-block;
+    background: #eafaf1; color: #27ae60;
+    font-size: 0.75rem; font-weight: 600;
+    padding: 2px 10px; border-radius: 20px;
+    border: 1px solid #a9dfbf;
+  }
+  .empty-state {
+    text-align: center; padding: 3rem 1rem;
+    color: #aaa; font-size: 1rem;
+  }
+  .empty-state span { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+</style>
+
+<!-- ─── Header ─── -->
+<div class="dashboard-header">
+  <h1>🏠 Host Dashboard</h1>
+  <p>Welcome back, <strong><%= currUser.username %></strong>! Manage your listings and view guest bookings below.</p>
+</div>
+
+<!-- ─── Owned Listings ─── -->
+<div class="section-title">Your Listings (<%= ownedListings.length %>)</div>
+
+<% if (ownedListings.length === 0) { %>
+  <div class="empty-state">
+    <span>🏡</span>
+    You don't have any listings yet.
+    <a href="/listings/new" style="color:#FF385C; font-weight:600;">Create your first listing →</a>
+  </div>
+<% } else { %>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mb-4">
+    <% for (let listing of ownedListings) { %>
+    <div class="col">
+      <div class="listing-card card h-100">
+        <% if (listing.image && listing.image.url) { %>
+          <img src="<%= listing.image.url %>" alt="<%= listing.title %>">
+        <% } else { %>
+          <div style="height:180px; background:#f5f5f5; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:2rem;">🏠</div>
+        <% } %>
+        <div class="card-body">
+          <div class="card-title"><%= listing.title %></div>
+          <div class="card-subtitle"><%= listing.location %>, <%= listing.country %></div>
+          <span class="price-badge">₹<%= listing.price.toLocaleString() %>/night</span>
+          <div class="listing-actions">
+            <a class="btn-edit" href="/listings/<%= listing._id %>/edit">✏️ Edit</a>
+            <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST"
+                  onsubmit="return confirm('Delete this listing? This cannot be undone.');"
+                  style="margin:0;">
+              <button type="submit" class="btn-delete">🗑 Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+  </div>
+<% } %>
+
+<!-- ─── Bookings ─── -->
+<div class="section-title">Paid Bookings for Your Listings (<%= bookings.length %>)</div>
+
+<% if (bookings.length === 0) { %>
+  <div class="empty-state">
+    <span>📭</span>
+    No paid bookings yet for your listings.
+  </div>
+<% } else { %>
+  <div style="overflow-x: auto;">
+    <table class="bookings-table">
+      <thead>
+        <tr>
+          <th>Guest</th>
+          <th>Listing</th>
+          <th>Check-in</th>
+          <th>Check-out</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let b of bookings) { %>
+        <tr>
+          <td>
+            <span class="avatar"><%= b.user.username ? b.user.username.charAt(0).toUpperCase() : "?" %></span>
+            <%= b.user.username %>
+          </td>
+          <td><a href="/listings/<%= b.listing._id %>" style="color:#2c3e50; font-weight:500;"><%= b.listing.title %></a></td>
+          <td><%= new Date(b.checkIn).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" }) %></td>
+          <td><%= new Date(b.checkOut).toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" }) %></td>
+          <td><strong>₹<%= b.totalAmount.toLocaleString() %></strong></td>
+          <td><span class="status-paid">✓ Paid</span></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+<% } %>
