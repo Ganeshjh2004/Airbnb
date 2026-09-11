@@ -1,2 +1,7 @@
+# Root-level
 .env
+node_modules/
 
+# Backend sub-package
+backend/.env
+backend/node_modules/

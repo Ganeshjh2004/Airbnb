@@ -1,0 +1,135 @@
+<% layout("/layouts/boilerplate.ejs") %>
+
+<style>
+    .admin-login-wrapper {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .admin-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        width: 100%;
+        max-width: 440px;
+    }
+
+    .admin-card-header {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: #f8fafc;
+        padding: 2rem 1.5rem 1.5rem;
+        text-align: center;
+    }
+
+    .admin-badge-icon {
+        width: 52px;
+        height: 52px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #38bdf8;
+        margin-bottom: 0.75rem;
+    }
+
+    .admin-card-body {
+        padding: 2rem 1.75rem;
+    }
+
+    .admin-input-label {
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: #334155;
+        margin-bottom: 0.35rem;
+    }
+
+    .admin-btn {
+        background: #0f172a;
+        color: #ffffff;
+        font-weight: 600;
+        padding: 0.65rem 1.25rem;
+        border-radius: 8px;
+        border: none;
+        width: 100%;
+        transition: all 0.2s ease;
+    }
+
+    .admin-btn:hover {
+        background: #1e293b;
+        color: #38bdf8;
+        transform: translateY(-1px);
+    }
+
+    .admin-notice {
+        font-size: 0.775rem;
+        color: #64748b;
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px dashed #e2e8f0;
+    }
+</style>
+
+<div class="admin-login-wrapper">
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-badge-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h2 style="font-size: 1.45rem; font-weight: 700; margin-bottom: 0.25rem;">Admin Portal</h2>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin: 0;">Authorized Management Access Only</p>
+        </div>
+
+        <div class="admin-card-body">
+            <form action="/admin/login" method="POST" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="admin-username" class="form-label admin-input-label">Admin Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-user-shield"></i></span>
+                        <input
+                            name="username"
+                            type="text"
+                            class="form-control"
+                            id="admin-username"
+                            placeholder="Enter administrator username"
+                            required
+                            autocomplete="username"
+                        />
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="admin-password" class="form-label admin-input-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                        <input
+                            name="password"
+                            type="password"
+                            class="form-control"
+                            id="admin-password"
+                            placeholder="••••••••••••"
+                            required
+                            autocomplete="current-password"
+                        />
+                    </div>
+                </div>
+
+                <button type="submit" class="admin-btn">
+                    <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Sign In to Portal
+                </button>
+            </form>
+
+            <div class="admin-notice">
+                <i class="fa-solid fa-circle-exclamation me-1 text-warning"></i>
+                This console is restricted. Unauthorized access attempts are monitored and logged.
+            </div>
+        </div>
+    </div>
+</div>

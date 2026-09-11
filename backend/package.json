@@ -4,9 +4,19 @@
   },
   "name": "major-project",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "jest --testEnvironment node --forceExit --runInBand"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "forceExit": true,
+    "testTimeout": 30000
   },
   "keywords": [],
   "author": "",
@@ -36,5 +46,14 @@
     "passport-local-mongoose": "^8.0.0",
     "puppeteer": "^24.11.2",
     "razorpay": "^2.9.6"
+  },
+  "devDependencies": {
+    "jest": "^30.5.1",
+    "mongodb-memory-server": "^11.2.0",
+    "supertest": "^7.2.2",
+    "supertest-session": "^5.0.1"
+  },
+  "allowScripts": {
+    "mongodb-memory-server@11.2.0": true
   }
 }

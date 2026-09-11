@@ -1,0 +1,46 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  test:
+    name: Jest Test Suite
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+        env:
+          # Minimal env vars required by the app at module-load time.
+          # These are safe placeholder values — no real services are contacted.
+          NODE_ENV: test
+          SECRET: ci-test-secret
+          RAZORPAY_KEY_ID: rzp_test_ci_fake
+          RAZORPAY_SECRET: ci_fake_razorpay_secret
+          GOOGLE_CLIENT_ID: fake-google-client-id
+          GOOGLE_CLIENT_SECRET: fake-google-client-secret
+          GOOGLE_CALLBACK_URL: http://localhost:8080/auth/google/callback
+          GMAIL_USER: ci@example.com
+          GMAIL_PASS: fake-gmail-pass
+          CLOUD_NAME: fake-cloud
+          CLOUD_API_KEY: "000000000000000"
+          CLOUD_API_SECRET: fake-cloud-secret
