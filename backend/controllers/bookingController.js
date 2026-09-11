@@ -4,6 +4,7 @@ const razorpay = require("../config/razorpay");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const generateBookingPDF = require("../utils/pdfGenerator");
+const bookingService = require("../services/bookingService");
 
 /**
  * Nodemailer transporter configured to send emails via Gmail.
@@ -46,57 +47,12 @@ exports.bookListing = async (req, res) => {
             return res.redirect("/listings");
         }
 
-        // Calculate the number of nights between check-in and check-out
-        const days =
-            (new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24);
-
-        if (days <= 0) {
-            req.flash("error", "Check-out date must be after check-in date.");
-            return res.redirect(`/listings/${id}`);
-        }
-
-        // ── Overlap check ────────────────────────────────────────────────────
-        // Reject if there is already a paid booking for this listing whose
-        // date range overlaps the requested range.
-        //
-        // Two ranges [A,B) and [C,D) overlap when A < D AND C < B.
-        // We also exclude cancelled bookings — they are treated as free slots.
-        const overlapping = await Booking.findOne({
-            listing: id,
-            paymentStatus: "paid",
-            checkIn: { $lt: new Date(checkOut) },
-            checkOut: { $gt: new Date(checkIn) },
-        });
-
-        if (overlapping) {
-            req.flash(
-                "error",
-                "These dates are already booked. Please choose different dates."
-            );
-            return res.redirect(`/listings/${id}`);
-        }
-
-        // Razorpay requires the amount in the smallest currency unit (paise for INR)
-        const totalAmountPaise = listing.price * days * 100;
-
-        // Create a Razorpay order — this does NOT charge the user yet
-        const order = await razorpay.orders.create({
-            amount: totalAmountPaise,
-            currency: "INR",
-            receipt: `receipt_${Date.now()}`,
-        });
-
-        // Save a pending booking; it will be marked "paid" after signature verification
-        const booking = new Booking({
-            listing: id,
-            user: req.user._id,
+        const { booking, order } = await bookingService.createBookingWithOrder({
+            listing,
+            userId: req.user._id,
             checkIn,
             checkOut,
-            totalAmount: totalAmountPaise / 100, // Store in rupees for display
-            razorpayOrderId: order.id,
         });
-
-        await booking.save();
 
         // Populate the user so the payment view can display the username
         await booking.populate("user");
@@ -108,7 +64,11 @@ exports.bookListing = async (req, res) => {
         });
     } catch (err) {
         console.error("Error during booking creation:", err.stack || err);
-        req.flash("error", "Something went wrong while processing your booking.");
+        const flashMsg =
+            err.statusCode === 400
+                ? err.message
+                : "Something went wrong while processing your booking.";
+        req.flash("error", flashMsg);
         res.redirect(`/listings/${id}`);
     }
 };
@@ -137,15 +97,14 @@ exports.verifyPayment = async (req, res) => {
         bookingId,
     } = req.body;
 
-    // Compute the expected HMAC-SHA256 signature to verify payment authenticity
-    const body = `${razorpay_order_id}|${razorpay_payment_id}`;
-    const expectedSignature = crypto
-        .createHmac("sha256", process.env.RAZORPAY_SECRET)
-        .update(body)
-        .digest("hex");
+    const isValidSignature = bookingService.verifyPaymentSignature({
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+    });
 
     // Reject if signature doesn't match — this prevents fake payment confirmations
-    if (expectedSignature !== razorpay_signature) {
+    if (!isValidSignature) {
         console.warn("Invalid Razorpay signature detected for order:", razorpay_order_id);
         return res
             .status(400)
@@ -293,51 +252,17 @@ exports.cancelBooking = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const booking = await Booking.findById(id);
-
-        if (!booking) {
-            req.flash("error", "Booking not found.");
-            return res.redirect("/listings");
-        }
-
-        // Owner-only: the logged-in user must be the booking's owner
-        if (!booking.user.equals(req.user._id)) {
-            req.flash("error", "You are not authorised to cancel this booking.");
-            return res.redirect("/listings");
-        }
-
-        // Only paid bookings can be cancelled
-        if (booking.paymentStatus !== "paid") {
-            req.flash("error", "Only confirmed (paid) bookings can be cancelled.");
-            return res.redirect("/listings");
-        }
-
-        // Enforce 24-hour cutoff before check-in
-        const hoursUntilCheckIn =
-            (new Date(booking.checkIn) - Date.now()) / (1000 * 60 * 60);
-
-        if (hoursUntilCheckIn <= 24) {
-            req.flash(
-                "error",
-                "Cancellations are only allowed more than 24 hours before check-in."
-            );
-            return res.redirect("/listings");
-        }
-
-        // Issue the Razorpay refund (amount in paise = totalAmount * 100)
-        await razorpay.payments.refund(booking.razorpayPaymentId, {
-            amount: booking.totalAmount * 100,
-        });
-
-        // Mark the booking as cancelled
-        booking.paymentStatus = "cancelled";
-        await booking.save();
+        await bookingService.cancelAndRefundBooking(id, req.user._id);
 
         req.flash("success", "Your booking has been cancelled and a refund has been initiated.");
         return res.redirect("/listings");
     } catch (err) {
         console.error("Booking cancellation error:", err.stack || err);
-        req.flash("error", "Something went wrong while cancelling your booking.");
+        const flashMsg =
+            err.statusCode
+                ? err.message
+                : "Something went wrong while cancelling your booking.";
+        req.flash("error", flashMsg);
         return res.redirect("/listings");
     }
 };

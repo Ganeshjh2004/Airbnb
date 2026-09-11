@@ -42,6 +42,7 @@ const legalRoutes = require("../../routes/legal.js");
 const bookingRoutes = require("../../routes/booking");
 const dashboardRoutes = require("../../routes/dashboard");
 const adminRoutes = require("../../routes/admin");
+const apiRouter = require("../../routes/api");
 
 /**
  * Factory: builds and returns the Express app.
@@ -98,6 +99,7 @@ function createApp() {
   app.use("/listings/:id/reviews", reviewRouter);
   app.use("/", userRouter);
   app.use("/", legalRoutes);
+  app.use("/api", apiRouter);
 
   // ── Error handler (keeps Supertest from seeing unhandled rejections) ──────────
   app.use((err, req, res, next) => {

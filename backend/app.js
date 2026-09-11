@@ -48,6 +48,7 @@ const legalRoutes = require("./routes/legal.js");
 const bookingRoutes = require("./routes/booking");
 const dashboardRoutes = require("./routes/dashboard");
 const adminRoutes = require("./routes/admin");
+const apiRouter = require("./routes/api");
 const Listing = require("./models/listing.js");
 
 // ─── View Engine ──────────────────────────────────────────────────────────────
@@ -180,6 +181,7 @@ app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);
 app.use("/", legalRoutes);
+app.use("/api", apiRouter);
 
 // ─── Search Route ─────────────────────────────────────────────────────────────
 
