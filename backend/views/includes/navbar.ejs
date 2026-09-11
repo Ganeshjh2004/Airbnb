@@ -124,8 +124,13 @@
           <a class="nav-link" href="/login"><b>Log in</b></a>
         <% } %>
         <% if (currUser) { %>
-          <a class="nav-link add" href="/dashboard"><b>Dashboard</b></a>
-          <a class="nav-link" href="/logout"><b>Log out</b></a>
+          <% if (typeof currAdmin !== 'undefined' && currAdmin) { %>
+            <a class="nav-link add" href="/admin/dashboard"><b>Admin Dashboard</b></a>
+            <a class="nav-link" href="/admin/logout"><b>Log out</b></a>
+          <% } else { %>
+            <a class="nav-link add" href="/dashboard"><b>Dashboard</b></a>
+            <a class="nav-link" href="/logout"><b>Log out</b></a>
+          <% } %>
         <% } %>
       </div>
     </div>

@@ -31,6 +31,7 @@ const ejsMate = require("ejs-mate");
 
 // Models & strategies (must be required before routes use them)
 require("../../models/user");
+require("../../models/Admin");
 require("../../Passport"); // registers Local + Google strategies and serialisers
 
 // Route modules
@@ -40,6 +41,7 @@ const userRouter = require("../../routes/user.js");
 const legalRoutes = require("../../routes/legal.js");
 const bookingRoutes = require("../../routes/booking");
 const dashboardRoutes = require("../../routes/dashboard");
+const adminRoutes = require("../../routes/admin");
 
 /**
  * Factory: builds and returns the Express app.
@@ -82,12 +84,16 @@ function createApp() {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currUser = req.user;
+    res.locals.currAdmin =
+      req.user &&
+      (req.user.constructor && req.user.constructor.modelName === "Admin");
     next();
   });
 
   // ── Routes ────────────────────────────────────────────────────────────────────
   app.use("/", bookingRoutes);
   app.use("/", dashboardRoutes);
+  app.use("/admin", adminRoutes);
   app.use("/listings", listingRouter);
   app.use("/listings/:id/reviews", reviewRouter);
   app.use("/", userRouter);

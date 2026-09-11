@@ -34,7 +34,8 @@ const ExpressError = require("./utils/ExpressError.js");
 
 // Models & Passport strategy configuration
 const User = require("./models/user.js");
-require("./Passport"); // Registers Local and Google OAuth strategies + serialisers
+const Admin = require("./models/Admin.js");
+require("./Passport"); // Registers Local, Admin Local, and Google OAuth strategies + serialisers
 
 // BUG FIX: Removed unused `LocalStrategy` import — it was imported here but
 // the strategy is configured inside Passport.js, not in app.js.
@@ -46,6 +47,7 @@ const userRouter = require("./routes/user.js");
 const legalRoutes = require("./routes/legal.js");
 const bookingRoutes = require("./routes/booking");
 const dashboardRoutes = require("./routes/dashboard");
+const adminRoutes = require("./routes/admin");
 const Listing = require("./models/listing.js");
 
 // ─── View Engine ──────────────────────────────────────────────────────────────
@@ -134,6 +136,10 @@ app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currUser = req.user;
+    res.locals.currAdmin =
+        req.user &&
+        (req.user instanceof Admin ||
+            (req.user && req.user.constructor && req.user.constructor.modelName === "Admin"));
     next();
 });
 
@@ -169,6 +175,7 @@ app.get(
 
 app.use("/", bookingRoutes);
 app.use("/", dashboardRoutes);
+app.use("/admin", adminRoutes);
 app.use("/listings", listingRouter);
 app.use("/listings/:id/reviews", reviewRouter);
 app.use("/", userRouter);

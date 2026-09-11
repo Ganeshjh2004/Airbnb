@@ -1,5 +1,6 @@
 const Listing = require("./models/listing");
 const Review = require("./models/review");
+const Admin = require("./models/Admin");
 const ExpressError = require("./utils/ExpressError.js");
 const { listingSchema, reviewSchema } = require("./schema.js");
 
@@ -65,7 +66,17 @@ module.exports.isOwner = async (req, res, next) => {
         return res.redirect("/listings");
     }
 
-    if (!listing.owner._id.equals(res.locals.currUser._id)) {
+    // Admin bypass: full CRUD authorization for authenticated administrators
+    const isAdmin =
+        req.isAuthenticated() &&
+        (req.user instanceof Admin ||
+            (req.user && req.user.constructor && req.user.constructor.modelName === "Admin"));
+
+    if (isAdmin) {
+        return next();
+    }
+
+    if (!res.locals.currUser || !listing.owner._id.equals(res.locals.currUser._id)) {
         req.flash("error", "You do not have permission to do that.");
         return res.redirect(`/listings/${id}`);
     }
@@ -139,5 +150,32 @@ module.exports.isReviewAuthor = async (req, res, next) => {
         return res.redirect(`/listings/${id}`);
     }
 
+    next();
+};
+
+/**
+ * Middleware: Ensures the request is made by an authenticated administrator.
+ *
+ * Verifies that:
+ *  1. req.isAuthenticated() is true
+ *  2. req.user is an Admin document (via instanceof, modelName, or isAdmin marker)
+ *
+ * Rejects unauthorized requests with a 403 status, flash error message,
+ * and redirect to /admin/login.
+ *
+ * @param {import("express").Request}  req
+ * @param {import("express").Response} res
+ * @param {import("express").NextFunction} next
+ */
+module.exports.isAdminLoggedIn = (req, res, next) => {
+    const isAdmin =
+        req.isAuthenticated() &&
+        (req.user instanceof Admin ||
+            (req.user && req.user.constructor && req.user.constructor.modelName === "Admin"));
+
+    if (!isAdmin) {
+        req.flash("error", "Access denied. Administrator privileges required.");
+        return res.redirect(403, "/admin/login");
+    }
     next();
 };

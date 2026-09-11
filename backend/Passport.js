@@ -2,14 +2,16 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("./models/user");
+const Admin = require("./models/Admin");
 
 /**
  * Configures Passport.js authentication strategies and session serialisation.
  *
- * This file is required once in app.js after the User model is loaded.
+ * This file is required once in app.js after the User and Admin models are loaded.
  * It sets up:
- *  1. Local Strategy  — username/password via passport-local-mongoose
- *  2. Google Strategy — OAuth 2.0 via passport-google-oauth20
+ *  1. Local Strategy       — username/password for User via passport-local-mongoose
+ *  2. Admin Local Strategy — username/password for Admin via passport-local-mongoose ("admin-local")
+ *  3. Google Strategy      — OAuth 2.0 via passport-google-oauth20
  *
  * Required environment variables:
  *  - GOOGLE_CLIENT_ID    : Google OAuth app client ID
@@ -17,7 +19,7 @@ const User = require("./models/user");
  *  - GOOGLE_CALLBACK_URL : Absolute URL of the OAuth callback endpoint
  */
 
-// ─── Local Strategy ───────────────────────────────────────────────────────────
+// ─── Local Strategy (User) ────────────────────────────────────────────────────
 
 /**
  * Delegates username/password authentication to passport-local-mongoose,
@@ -25,6 +27,15 @@ const User = require("./models/user");
  * authenticate() method.
  */
 passport.use(new LocalStrategy(User.authenticate()));
+
+// ─── Admin Local Strategy ───────────────────────────────────────────────────
+
+/**
+ * Delegates administrator authentication to the Admin model.
+ * Registered under the name "admin-local" to prevent conflicts with the default "local"
+ * strategy used for regular users.
+ */
+passport.use("admin-local", new LocalStrategy(Admin.authenticate()));
 
 // ─── Google OAuth 2.0 Strategy ───────────────────────────────────────────────
 
@@ -71,28 +82,47 @@ passport.use(
 // ─── Session Serialisation ───────────────────────────────────────────────────
 
 /**
- * Serialises the authenticated user into the session.
- * Only the user's MongoDB _id is stored in the session cookie to minimise
- * session payload size.
+ * Serialises the authenticated user or admin into the session.
+ * Stores { id, type } so deserializeUser knows whether to query User or Admin.
  *
- * @param {Object}   user - The authenticated user document.
- * @param {Function} done - Passport callback: done(err, id)
+ * @param {Object}   user - The authenticated user or admin document.
+ * @param {Function} done - Passport callback: done(err, sessionData)
  */
 passport.serializeUser((user, done) => {
-    done(null, user.id);
+    const isModelAdmin =
+        user instanceof Admin ||
+        (user.constructor && user.constructor.modelName === "Admin");
+
+    done(null, {
+        id: user.id,
+        type: isModelAdmin ? "Admin" : "User",
+    });
 });
 
 /**
  * Deserialises the user from the session on each subsequent request.
- * Fetches the full user document from MongoDB using the stored _id.
+ * Fetches the document from MongoDB using the stored id and model type.
+ * Includes a backwards-compatible fallback if an id string was stored.
  *
- * @param {string}   id   - The serialised user ID from the session.
- * @param {Function} done - Passport callback: done(err, user)
+ * @param {Object|string} sessionData - The serialised session data { id, type } or string id.
+ * @param {Function}      done        - Passport callback: done(err, user)
  */
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (sessionData, done) => {
     try {
+        if (sessionData && typeof sessionData === "object" && sessionData.type === "Admin") {
+            const admin = await Admin.findById(sessionData.id);
+            return done(null, admin);
+        }
+
+        const id = sessionData && typeof sessionData === "object" ? sessionData.id : sessionData;
         const user = await User.findById(id);
-        done(null, user);
+        if (user) {
+            return done(null, user);
+        }
+
+        // Fallback for Admin stored as plain id
+        const admin = await Admin.findById(id);
+        return done(null, admin);
     } catch (err) {
         done(err, null);
     }
