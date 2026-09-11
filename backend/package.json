@@ -49,11 +49,12 @@
   },
   "devDependencies": {
     "jest": "^30.5.1",
-    "mongodb-memory-server": "^11.2.0",
+    "mongodb-memory-server": "^10.1.4",
     "supertest": "^7.2.2",
     "supertest-session": "^5.0.1"
   },
   "allowScripts": {
-    "mongodb-memory-server@11.2.0": true
+    "mongodb-memory-server@10.1.4": true,
+    "puppeteer@24.11.2": true
   }
 }
