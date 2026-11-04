@@ -118,7 +118,8 @@ function computeSignature(orderId, paymentId, secret) {
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe("POST /verify-payment", () => {
-  const RAZORPAY_SECRET = "fake_razorpay_secret"; // must match createApp.js env stub
+  // createApp supplies a local fallback and CI injects its own safe test value.
+  const RAZORPAY_SECRET = process.env.RAZORPAY_SECRET;
   const ORDER_ID = "order_test_abc";
   const PAYMENT_ID = "pay_test_xyz";
 
