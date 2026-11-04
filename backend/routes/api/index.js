@@ -20,8 +20,10 @@ const listingsRoutes = require("./listings");
 const bookingsRoutes = require("./bookings");
 const dashboardRoutes = require("./dashboard");
 const authRoutes = require("./auth");
+const reviewsRoutes = require("./reviews");
 
 router.use("/listings", listingsRoutes);
+router.use("/listings/:id/reviews", reviewsRoutes);
 router.use("/bookings", bookingsRoutes);
 router.use("/", dashboardRoutes);
 router.use("/auth", authRoutes);

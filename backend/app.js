@@ -272,6 +272,10 @@ app.all("*", (req, res, next) => {
  */
 app.use((err, req, res, next) => {
     const { statusCode = 500, message = "Something went wrong." } = err;
+    // Return JSON for API routes instead of rendering the EJS error template
+    if (req.path.startsWith("/api/") || req.originalUrl.startsWith("/api/")) {
+        return res.status(statusCode).json({ error: message });
+    }
     res.status(statusCode).render("listings/error", { message });
 });
 
