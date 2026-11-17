@@ -20,6 +20,7 @@ Vite starts at `http://localhost:5173` by default. The app calls `http://localho
 
 ## Environment configuration
 
+
 Create `.env.local` when the API is not running on the default local URL:
 
 ```env
@@ -42,6 +43,7 @@ npm run lint     # Run Oxlint
 ## Application structure
 
 ```text
+
 src/
 |-- api/         Fetch client and API base URL handling
 |-- components/  Shared UI components
@@ -52,3 +54,7 @@ src/
 ```
 
 The backend retains legacy EJS pages; this frontend is the modern client for the same application and API.
+
+
+
+
